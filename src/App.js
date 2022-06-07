@@ -1,6 +1,6 @@
 import  './index.css';
 import React,{useState} from 'react';
-import {  Route , Routes , Navigate } from 'react-router-dom';
+import {  Route , Routes , Navigate, useNavigate } from 'react-router-dom';
 
 import Storage from './Storage.js';
 
@@ -25,13 +25,14 @@ function App() {
   event.preventDefault()
   setData({...data , [event.target.name]:event.target.value})
   }
+  const navigatee = useNavigate();
   const addNewCategory = () =>{
   const {title , desc} = data;
   if(!title || !desc) return;
   Storage.saveCategory({title,desc})
   setCategories(Storage.getAllCategories());
   
-  
+  navigatee("/productform");
   }
 //products
 const [dataa , setDataa] = useState({
@@ -48,12 +49,13 @@ const changeehandler = e =>{
   
   
   }
-const addnewproduct = (e) =>{
-  e.preventDefault()
+const addnewproduct = () =>{
+ 
   const {title , quan , cate} = dataa;
   Storage.saveProducts({title,quan,cate});
   
   setProducts(Storage.getAllProducts());
+  navigatee("/products");
 }
 const deletehandler = (e) =>{
   const produdcId = e.target.dataset.productId;
@@ -62,7 +64,7 @@ const deletehandler = (e) =>{
 }
 // search
 const [val , setVal] = useState("");
-
+console.log(val);
 const valhandler = (e) =>{
   e.preventDefault();
   
@@ -93,7 +95,7 @@ const sortProducrs = (e) => {
         <Route path="/productform" element={<Productform category={categories} dataa={dataa} changeehandler={changeehandler} addnewproduct={addnewproduct} />}/>
         
           <Route path='/products' element={<ProductList products={products} deletehandler={deletehandler} sort={sort} sortProducrs={sortProducrs}/>} />
-          <Route path='/Search' element={<Search valhandler={valhandler} val={val} filteredProducts={filteredProducts} deletehandler={deletehandler}/>}/>
+          <Route path='/Search' element={<Search valhandler={valhandler} val={val} filteredProducts={filteredProducts}  deletehandler={deletehandler}/>}/>
           <Route path='/' element={ <Navigate to="/productform" />} />
         </Routes>
         
